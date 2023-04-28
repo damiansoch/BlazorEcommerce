@@ -17,6 +17,21 @@
     transform: scale(1.1);
 }
 
+.media {
+    display: flex;
+    -ms-align-items: flex-start;
+    -o-align-items: flex-start;
+    -webkit-align-items: flex-start;
+    align-items: flex-start
+}
+
+.media-body {
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    -o-flex: 1;
+    flex: 1;
+}
+
 .media-image-wraper {
     width: 200px;
     text-align: center
