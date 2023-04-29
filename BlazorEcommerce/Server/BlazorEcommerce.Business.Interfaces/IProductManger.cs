@@ -2,6 +2,6 @@
 {
     public interface IProductManger
     {
-        Task<IEnumerable<ProductManager>> GetAllProducts();
+        Task<IEnumerable<Product>> GetAllProducts();
     }
 }
