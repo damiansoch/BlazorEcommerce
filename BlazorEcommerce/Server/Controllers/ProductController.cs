@@ -1,4 +1,5 @@
 ﻿using System.Data.SqlClient;
+using BlazorEcommerce.Server.BlazorEcommerce.Business.Interfaces;
 using Dapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +11,12 @@ namespace BlazorEcommerce.Server.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IConfiguration _configuration;
+        private readonly IProductManger _productsManager;
 
-        public ProductController(IConfiguration configuration)
+        public ProductController(IConfiguration configuration,IProductManger productsManager)
         {
             _configuration = configuration;
+            _productsManager = productsManager;
         }
         //------------------------------------------- 
         //private static List<Product> Products = new List<Product>
@@ -50,9 +53,8 @@ namespace BlazorEcommerce.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Product>>> GetAllProducts()
         {
-            await using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
-            var products = await connection.QueryAsync<Product>("select * from products");
-            return Ok(products.ToList());
+            var products = await _productsManager.GetAllProducts();
+            return Ok(products);
         }
 
     }

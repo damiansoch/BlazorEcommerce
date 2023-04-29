@@ -1,10 +1,14 @@
 global using BlazorEcommerce.Shared;
-
+using BlazorEcommerce.Server.BlazorEcommerce.Business;
+using BlazorEcommerce.Server.BlazorEcommerce.Business.Interfaces;
 using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+// dependency injection
+builder.Services.AddSingleton<IProductManger, ProductManager>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
