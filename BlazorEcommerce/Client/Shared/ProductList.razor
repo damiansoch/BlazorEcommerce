@@ -15,18 +15,19 @@ else
         {
             <li class="media my3">
                 <div class="media-image-wraper mr-3">
-                    <a href="#">
+                    <a href="/product/@product.Id">
                         <img class="media-img" src="@product.ImageUrl" alt="@product.Title" />
                     </a>
                 </div>
                 <div class="media-body">
-                    <a href="#">
+                    <a href="/product/@product.Id">
                         <h4 class="mb-0">@product.Title</h4>
-                        <p>@product.Description</p>
-                        <h5 class="price">
-                            $@product.Price
-                        </h5>
                     </a>
+                    <p>@product.Description</p>
+                    <h5 class="price">
+                        $@product.Price
+                    </h5>
+
                 </div>
             </li>
         }
