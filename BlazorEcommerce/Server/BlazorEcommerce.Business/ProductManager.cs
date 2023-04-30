@@ -13,12 +13,16 @@ namespace BlazorEcommerce.Server.BlazorEcommerce.Business
         {
             _configuration = configuration;
         }
-        public async Task<IEnumerable<Product>> GetAllProducts()
+        public async Task<ServiceResponse<IEnumerable<Product>>> GetAllProducts()
         {
-           
+
             await using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
-            var products = await connection.QueryAsync<Product>("select * from products");
-            return products;
+
+            var response = new ServiceResponse<IEnumerable<Product>>()
+            {
+                Data = await connection.QueryAsync<Product>("select * from products")
+            };
+            return response;
         }
-    }
+}
 }

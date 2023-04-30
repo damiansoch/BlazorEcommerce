@@ -2,7 +2,7 @@
 
 
 <ul class="list-unstyled">
-    @foreach (var product in Products)
+    @foreach (var product in Products.Data)
     {
         <li class="media my3">
             <div class="media-image-wraper mr-3">
@@ -25,12 +25,12 @@
 
 
 @code {
-    private static List<Product> Products = new();
+    private static ServiceResponse<List<Product>> Products = new();
 
     protected override async Task OnInitializedAsync()
     {
-        var result = await Http.GetFromJsonAsync<List<Product>>("api/Product");
-        if (result is not null)
+        var result = await Http.GetFromJsonAsync<ServiceResponse<List<Product>>>("api/Product");
+        if (result is not null && result.Data is not null)
 
             Products = result;
     }
