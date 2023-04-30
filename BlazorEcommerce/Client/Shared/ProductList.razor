@@ -1,38 +1,46 @@
-﻿@inject HttpClient Http
+﻿@inject IProductManager ProductManager
 
+@if (ProductManager.Products is null || ProductManager.Products.Count == 0)
+{
+    <div class="row">
+        <div class="spinner-grow mx-auto" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+else
+{
+    <ul class="list-unstyled">
+        @foreach (var product in ProductManager.Products)
+        {
+            <li class="media my3">
+                <div class="media-image-wraper mr-3">
+                    <a href="#">
+                        <img class="media-img" src="@product.ImageUrl" alt="@product.Title" />
+                    </a>
+                </div>
+                <div class="media-body">
+                    <a href="#">
+                        <h4 class="mb-0">@product.Title</h4>
+                        <p>@product.Description</p>
+                        <h5 class="price">
+                            $@product.Price
+                        </h5>
+                    </a>
+                </div>
+            </li>
+        }
+    </ul>
+}
 
-<ul class="list-unstyled">
-    @foreach (var product in Products.Data)
-    {
-        <li class="media my3">
-            <div class="media-image-wraper mr-3">
-                <a href="#">
-                    <img class="media-img" src="@product.ImageUrl" alt="@product.Title"/>
-                </a>
-            </div>
-            <div class="media-body">
-                <a href="#">
-                    <h4 class="mb-0">@product.Title</h4>
-                    <p>@product.Description</p>
-                    <h5 class="price">
-                        $@product.Price
-                    </h5>
-                </a>
-            </div>
-        </li>
-    }
-</ul>
 
 
 @code {
-    private static ServiceResponse<List<Product>> Products = new();
+
 
     protected override async Task OnInitializedAsync()
     {
-        var result = await Http.GetFromJsonAsync<ServiceResponse<List<Product>>>("api/Product");
-        if (result is not null && result.Data is not null)
-
-            Products = result;
+        await ProductManager.GetProducts();
     }
 
 }

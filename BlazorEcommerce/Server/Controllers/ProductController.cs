@@ -11,19 +11,19 @@ namespace BlazorEcommerce.Server.Controllers
     public class ProductController : ControllerBase
     {
         
-        private readonly IProductManger _productsManager;
+        private readonly IProductManger _productManager;
 
-        public ProductController(IProductManger productsManager)
+        public ProductController(IProductManger productManager)
         {
             
-            _productsManager = productsManager;
+            _productManager = productManager;
         }
        
 
         [HttpGet]
         public async Task<ActionResult<ServiceResponse<List<Product>>>> GetAllProducts()
         {
-            var products = await _productsManager.GetAllProducts();
+            var products = await _productManager.GetAllProducts();
             
             return Ok(products);
         }
