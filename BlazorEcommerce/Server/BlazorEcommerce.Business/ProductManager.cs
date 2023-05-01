@@ -49,5 +49,21 @@ namespace BlazorEcommerce.Server.BlazorEcommerce.Business
             }
             
         }
+
+        public async Task<IEnumerable<Product>> GetProductsByCategory(Guid categoryId)
+        {
+            try
+            {
+                await using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+                var response = await connection.QueryAsync<Product>(
+                    "select * from products where categoryId = @CategoryId", new { CategoryId = categoryId });
+                return response;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
     }
 }

@@ -38,5 +38,14 @@ namespace BlazorEcommerce.Server.Controllers
             return Ok(product);
         }
 
+        [HttpGet("categoryId/{categoryId:guid}")]
+        public async Task<ActionResult<List<Product>>> GetProductsByCategory(Guid categoryId)
+        {
+            var products = await _productManager.GetProductsByCategory(categoryId);
+            if(products is null)
+                return NotFound();
+            return Ok(products);
+        }
+
     }
 }
