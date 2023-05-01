@@ -15,14 +15,39 @@ namespace BlazorEcommerce.Server.BlazorEcommerce.Business
         }
         public async Task<ServiceResponse<IEnumerable<Product>>> GetAllProducts()
         {
-
-            await using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
-
-            var response = new ServiceResponse<IEnumerable<Product>>()
+            try
             {
-                Data = await connection.QueryAsync<Product>("select * from products")
-            };
-            return response;
+                await using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+                var response = new ServiceResponse<IEnumerable<Product>>()
+                {
+                    Data = await connection.QueryAsync<Product>("select * from products")
+                };
+                return response;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
+
+            
         }
-}
+
+        public async Task<Product> GetProductById(Guid id)
+        {
+            try
+            {
+                await using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+                var response = await connection.QueryFirstAsync<Product>("select * from products where id = @Id", new { Id = id });
+                return response;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
+        }
+    }
 }

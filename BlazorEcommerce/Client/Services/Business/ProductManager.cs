@@ -23,5 +23,16 @@ namespace BlazorEcommerce.Client.Services.Business
             }
             
         }
+
+        public async Task<Product> GetProductById(Guid id)
+        {
+            var result = await _client.GetFromJsonAsync<Product>($"api/Product/{id}");
+            if (result is not null)
+            {
+                return result;
+            }
+
+            throw new Exception("Not found");
+        }
     }
 }

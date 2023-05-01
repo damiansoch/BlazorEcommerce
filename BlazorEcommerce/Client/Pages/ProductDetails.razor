@@ -1,7 +1,7 @@
 ﻿@page "/product/{id:guid}"
 @inject IProductManager ProductManager
 
-@if (product is null)
+@if (Product is null)
 {
     <div class="row">
         <div class="spinner-grow mx-auto" role="status">
@@ -13,24 +13,24 @@ else
 {
     <div class="media">
         <div class="media-img-wrapper mr-2">
-            <img class="media-img" src="@product.ImageUrl" alt="@product.Title"/>
+            <img class="media-img" src="@Product.ImageUrl" alt="@Product.Title" />
         </div>
         <div class="media-body">
-            <h2 class="mb-0">@product.Title</h2>
-            <p>@product.Description</p>
-            <h4 class="price">@product.Price</h4>
+            <h2 class="mb-0">@Product.Title</h2>
+            <p>@Product.Description</p>
+            <h4 class="price">@Product.Price</h4>
         </div>
     </div>
 }
 
 @code {
-    private Product? product = null;
 
     [Parameter]
     public Guid Id { get; set; }
 
+    public Product? Product { get; set; }
     protected override async Task OnParametersSetAsync()
     {
-        product = ProductManager.Products.Find(p => p.Id == Id);
+        Product=await ProductManager.GetProductById(Id);
     }
 }

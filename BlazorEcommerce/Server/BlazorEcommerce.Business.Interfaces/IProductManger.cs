@@ -2,6 +2,8 @@
 {
     public interface IProductManger
     {
+        
         Task<ServiceResponse<IEnumerable<Product>>> GetAllProducts();
+        Task<Product> GetProductById(Guid id);
     }
 }
