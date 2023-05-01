@@ -8,60 +8,21 @@ namespace BlazorEcommerce.Server.BlazorEcommerce.Business
     public class ProductManager : IProductManger
     {
         private readonly IConfiguration _configuration;
-        
-        
 
         public ProductManager(IConfiguration configuration)
         {
             _configuration = configuration;
         }
-
-
-        public async Task<ServiceResponse<IEnumerable<Product>>> GetAllProductsAsync()
+        public async Task<ServiceResponse<IEnumerable<Product>>> GetAllProducts()
         {
 
-            try
-            {
-                await using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+            await using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
 
-                var response = new ServiceResponse<IEnumerable<Product>>()
-                {
-                    Data = await connection.QueryAsync<Product>("select * from products")
-                };
-                return response;
-            }
-            catch (Exception e)
+            var response = new ServiceResponse<IEnumerable<Product>>()
             {
-                var response = new ServiceResponse<IEnumerable<Product>>()
-                {
-                    Success = false,
-                    Message = e.Message
-                };
-                return response;
-            }
+                Data = await connection.QueryAsync<Product>("select * from products")
+            };
+            return response;
         }
-
-        public async Task<ServiceResponse<Product>> GetProductByIdAsync(Guid id)
-        {
-            try
-            {
-                await using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
-
-                var response = new ServiceResponse<Product>()
-                {
-                    Data = await connection.QueryFirstAsync<Product>("select * from products where id = @Id", new { Id = id })
-                };
-                return response;
-            }
-            catch (Exception e)
-            {
-                var response = new ServiceResponse<Product>()
-                {
-                    Success = false,
-                    Message = e.Message
-                };
-                return response;
-            }
-        }
-    }
+}
 }
