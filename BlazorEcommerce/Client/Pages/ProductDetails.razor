@@ -1,36 +1,51 @@
 ﻿@page "/product/{id:guid}"
 @inject IProductManager ProductManager
 
-@if (product is null)
+@if (_product is null && message.Length == 0)
 {
     <div class="row">
         <div class="spinner-grow mx-auto" role="status">
-            <span class="visually-hidden">Loading...</span>
+            <span class="visually-hidden">@message</span>
         </div>
     </div>
 }
-else
+else if (_product is null && message.Length > 0)
+{
+    <p>@message</p>
+}
+else if (_product is not null)
 {
     <div class="media">
         <div class="media-img-wrapper mr-2">
-            <img class="media-img" src="@product.ImageUrl" alt="@product.Title"/>
+            <img class="media-img" src="@_product.ImageUrl" alt="@_product.Title" />
         </div>
         <div class="media-body">
-            <h2 class="mb-0">@product.Title</h2>
-            <p>@product.Description</p>
-            <h4 class="price">@product.Price</h4>
+            <h2 class="mb-0">@_product.Title</h2>
+            <p>@_product.Description</p>
+            <h4 class="price">@_product.Price</h4>
         </div>
-    </div>
+    </div> 
 }
 
+
 @code {
-    private Product? product = null;
+    private Product? _product = null;
+    private string message = string.Empty;
 
     [Parameter]
     public Guid Id { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
-        product = ProductManager.Products.Find(p => p.Id == Id);
+        message = "Loading product...";
+        var result = await ProductManager.GetProductById(Id);
+        if (result.Data is null)
+        {
+            message = result.Message;
+        }
+
+        _product = result.Data;
+        
+
     }
 }

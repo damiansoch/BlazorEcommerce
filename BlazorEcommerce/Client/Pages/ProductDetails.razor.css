@@ -11,10 +11,27 @@
     max-width: 500px;
     text-align: center
 }
+.media {
+    display: flex;
+    -ms-align-items: flex-start;
+    -o-align-items: flex-start;
+    -webkit-align-items: flex-start;
+    align-items: flex-start
+}
+
+.media-body {
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    -o-flex: 1;
+    flex: 1;
+}
 .price {
     color: green
 }
 @media(max-width: 1023.98px) {
+    .media {
+        flex-direction: column
+    }
     .media-img {
         max-width: 300px;
     }

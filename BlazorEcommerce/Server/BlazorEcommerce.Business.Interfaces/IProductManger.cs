@@ -2,6 +2,7 @@
 {
     public interface IProductManger
     {
-        Task<ServiceResponse<IEnumerable<Product>>> GetAllProducts();
+        Task<ServiceResponse<IEnumerable<Product>>> GetAllProductsAsync();
+        Task<ServiceResponse<Product>> GetProductByIdAsync(Guid id);
     }
 }
