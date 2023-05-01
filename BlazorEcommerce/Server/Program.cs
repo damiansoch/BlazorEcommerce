@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // dependency injection
 builder.Services.AddSingleton<IProductManger, ProductManager>();
+builder.Services.AddSingleton<ICategoryManager, CategoryManager>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
