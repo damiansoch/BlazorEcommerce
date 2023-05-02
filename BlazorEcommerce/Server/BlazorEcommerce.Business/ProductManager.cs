@@ -22,6 +22,7 @@ namespace BlazorEcommerce.Server.BlazorEcommerce.Business
                 {
                     Data = await connection.QueryAsync<Product>("select * from products")
                 };
+               
                 return response;
             }
             catch (Exception e)
@@ -40,6 +41,9 @@ namespace BlazorEcommerce.Server.BlazorEcommerce.Business
             {
                 await using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
                 var response = await connection.QueryFirstAsync<Product>("select * from products where id = @Id", new { Id = id });
+                var variants = await connection.QueryAsync<ProductVariant>(
+                    "select pt.name as typeName,pv.price,pv.originalPrice,pv.productId,pv.productTypeId from [dbo].[Products] p join [dbo].[ProductVariants] pv on p.id = pv.productId join [dbo].[ProductTypes] pt on pv.productTypeId = pt.id where p.id = @Id", new {Id =id });
+                response.Variants = variants.ToList();
                 return response;
             }
             catch (Exception e)
