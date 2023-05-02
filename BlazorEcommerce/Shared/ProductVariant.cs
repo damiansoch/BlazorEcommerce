@@ -11,7 +11,7 @@ namespace BlazorEcommerce.Shared
 
         public Guid ProductId { get; set; }
         public Guid ProductTypeId { get; set; }
-        public string TypeName { get; set; } = string.Empty;
+        public string? TypeName { get; set; } = null;
         public decimal Price { get; set; }
         public decimal OriginalPrice  { get; set; }
     }
