@@ -1,5 +1,19 @@
 ﻿@page "/"
+@page "/categoryId/{categoryId}"
+@inject IProductManager ProductManager
 
 <PageTitle>My Shop</PageTitle>
 
 <ProductList/>
+
+
+@code
+{
+    [Parameter]
+    public string? CategoryId { get; set; } = null;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await ProductManager.GetProducts(CategoryId);
+    }
+}
