@@ -1,7 +1,8 @@
 ﻿@page "/product/{id:guid}"
+@using BlazorEcommerce.Client.Shared.HelpersFunctions
 @inject IProductManager ProductManager
 
-@if (Product is null)
+@if (_product is null)
 {
     <div class="row">
         <div class="spinner-grow mx-auto" role="status">
@@ -11,29 +12,54 @@
 }
 else
 {
+
     <div class="media">
         <div class="media-img-wrapper mr-2">
-            <img class="media-img" src="@Product.ImageUrl" alt="@Product.Title" />
+            <img class="media-img" src="@_product.ImageUrl" alt="@_product.Title" />
         </div>
         <div class="media-body">
-            <h2 class="mb-0">@Product.Title</h2>
-            <p>@Product.Description</p>
-            <h4 class="price">
-                @*@Product.Price*@
-                prize will go here
-            </h4>
+            <h2 class="mb-0">@_product.Title</h2>
+            <p>@_product.Description</p>
+
+            @if (_currentVariant.Price < _currentVariant.OriginalPrice)
+            {
+                
+                    <h6 class="text-muted text-decoration-line-through">
+                        $@_currentVariant.OriginalPrice.PriceToFixedString()
+                    </h6>
+                    <h4 class="price">
+                        $@_currentVariant.Price.PriceToFixedString()
+                    </h4>
+
+               
+            }
+            else
+            {
+                <h4 class="price">
+                    $@_currentVariant.Price.PriceToFixedString()
+                </h4>
+            }
+
+
+
         </div>
     </div>
 }
 
 @code {
+    private Product? _product = null;
+    private ProductVariant? _currentVariant = null;
 
     [Parameter]
     public Guid Id { get; set; }
 
-    public Product? Product { get; set; }
+
     protected override async Task OnParametersSetAsync()
     {
-        Product=await ProductManager.GetProductById(Id);
+        _product = await ProductManager.GetProductById(Id);
+        var lowestPrice = _product.Variants.Min(x => x.Price);
+        _currentVariant = _product.Variants.First(p => p.Price == lowestPrice);
     }
+
+
 }

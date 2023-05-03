@@ -1,4 +1,5 @@
 ﻿@inject IProductManager ProductManager
+@using BlazorEcommerce.Client.Shared.HelpersFunctions
 @implements IDisposable
 
 @if (ProductManager.Products is null || ProductManager.Products.Count == 0)
@@ -26,8 +27,7 @@ else
                     </a>
                     <p>@product.Description</p>
                     <h5 class="price">
-                        @*$@product.Price*@
-                        product prize will be here
+                        @GetPriceText(product)
                     </h5>
 
                 </div>
@@ -50,4 +50,25 @@ else
     {
         ProductManager.ProductChanged -= StateHasChanged;
     }
+
+    private string GetPriceText(Product product)
+    {
+        var variants = product.Variants;
+        if (variants.Count == 0)
+        {
+            return string.Empty;
+        }
+        else if (variants.Count == 1)
+        {
+            return $"${variants[0].Price.PriceToFixedString()}";
+        }
+        else
+        {
+            decimal minPrice = variants.Min(x => x.Price);
+            return $"Starting at ${minPrice.PriceToFixedString()}";
+        }
+
+    }
+
+
 }

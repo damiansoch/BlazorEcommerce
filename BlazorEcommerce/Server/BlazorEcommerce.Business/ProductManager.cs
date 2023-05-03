@@ -1,6 +1,7 @@
 ﻿using BlazorEcommerce.Server.BlazorEcommerce.Business.Interfaces;
 using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;
+using BlazorEcommerce.Server.BlazorEcommerce.Repository.Interfaces;
 using Dapper;
 
 namespace BlazorEcommerce.Server.BlazorEcommerce.Business
@@ -8,73 +9,43 @@ namespace BlazorEcommerce.Server.BlazorEcommerce.Business
     public class ProductManager : IProductManger
     {
         private readonly IConfiguration _configuration;
+        private readonly IProductRepository _productRepository;
 
-        public ProductManager(IConfiguration configuration)
+        public ProductManager(IConfiguration configuration,IProductRepository productRepository)
         {
             _configuration = configuration;
+            _productRepository = productRepository;
         }
         public async Task<ServiceResponse<IEnumerable<Product>>> GetAllProducts()
         {
-            try
+            var result = await _productRepository.GetAllAsync();
+            if (result is not null)
             {
-                await using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
-                var response = new ServiceResponse<IEnumerable<Product>>()
+                var serviceResponseWithData = new ServiceResponse<IEnumerable<Product>>()
                 {
-                    Data = await connection.QueryAsync<Product>("select * from products")
+                    Data = result
                 };
-
-                foreach (var data in response.Data)
-                {
-                    var variants =
-                        await connection.QueryAsync<ProductVariant>(
-                            "select * from ProductVariants where productId = @ProductId", new { ProductId = data.Id });
-                    data.Variants = variants.ToList();
-                }
-                return response;
+                return serviceResponseWithData;
             }
-            catch (Exception e)
+            else
             {
-                Console.WriteLine(e);
-                throw;
+                return null;
             }
-
-
-
         }
 
         public async Task<Product> GetProductById(Guid id)
         {
-            try
+            var product = await _productRepository.GetAsync(id);
+            if (product is not null)
             {
-                await using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
-                var response = await connection.QueryFirstAsync<Product>("select * from products where id = @Id", new { Id = id });
-                var variants = await connection.QueryAsync<ProductVariant>(
-                    "select pt.name as typeName,pv.price,pv.originalPrice,pv.productId,pv.productTypeId from [dbo].[Products] p join [dbo].[ProductVariants] pv on p.id = pv.productId join [dbo].[ProductTypes] pt on pv.productTypeId = pt.id where p.id = @Id", new { Id = id });
-                response.Variants = variants.ToList();
-                return response;
+                return product;
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-
+            return null;
         }
 
         public async Task<IEnumerable<Product>> GetProductsByCategory(Guid categoryId)
         {
-            try
-            {
-                await using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
-                var response = await connection.QueryAsync<Product>(
-                    "select * from products where categoryId = @CategoryId", new { CategoryId = categoryId });
-                return response;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            return await _productRepository.GetProductByCategory(categoryId);
         }
     }
 }

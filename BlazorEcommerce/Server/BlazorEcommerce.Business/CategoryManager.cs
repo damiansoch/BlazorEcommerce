@@ -1,5 +1,6 @@
 ﻿using System.Data.SqlClient;
 using BlazorEcommerce.Server.BlazorEcommerce.Business.Interfaces;
+using BlazorEcommerce.Server.BlazorEcommerce.Repository.Interfaces;
 using Dapper;
 
 namespace BlazorEcommerce.Server.BlazorEcommerce.Business
@@ -7,32 +8,18 @@ namespace BlazorEcommerce.Server.BlazorEcommerce.Business
     public class CategoryManager : ICategoryManager
     {
         private readonly IConfiguration _conf;
+        private readonly ICategoryRepository _categoryRepository;
 
-        public CategoryManager(IConfiguration conf)
+        public CategoryManager(IConfiguration conf,ICategoryRepository categoryRepository)
         {
             _conf = conf;
+            _categoryRepository = categoryRepository;
+
         }
         public async Task<IEnumerable<Category>> GetCategoriesAsync()
         {
-
-            try
-            {
-                using (var connection = new SqlConnection(_conf.GetConnectionString("DefaultConnection")))
-                {
-                    var response = await connection.QueryAsync<Category>("select * from categories");
-                    if (response is not null)
-                    {
-                        return response;
-                    }
-
-                    throw new Exception("Cant find any categories");
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            var categories = await _categoryRepository.GetAllCategories();
+            return categories;
         }
     }
 }

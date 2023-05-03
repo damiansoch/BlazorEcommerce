@@ -1,6 +1,8 @@
 global using BlazorEcommerce.Shared;
 using BlazorEcommerce.Server.BlazorEcommerce.Business;
 using BlazorEcommerce.Server.BlazorEcommerce.Business.Interfaces;
+using BlazorEcommerce.Server.BlazorEcommerce.Repository;
+using BlazorEcommerce.Server.BlazorEcommerce.Repository.Interfaces;
 using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,8 +10,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 // dependency injection
-builder.Services.AddSingleton<IProductManger, ProductManager>();
-builder.Services.AddSingleton<ICategoryManager, CategoryManager>();
+builder.Services.AddScoped<IProductManger, ProductManager>();
+builder.Services.AddScoped<ICategoryManager, CategoryManager>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IVariantRepository, VariantRepository>();
+builder.Services.AddScoped<IProductTypeRepository, ProductTypeRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
