@@ -28,7 +28,14 @@ namespace BlazorEcommerce.Server.Controllers
                 return NotFound();
             return Ok(products);
         }
-
+        [HttpPost]
+        public async Task<ActionResult<ServiceResponse<List<Product>>>> SearchProducts(string searchText)
+        {
+            var products = await _productManager.SearchProducts(searchText);
+            if (products is null)
+                return NotFound();
+            return Ok(products);
+        }
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<Product>> GetProductById(Guid id)
         {

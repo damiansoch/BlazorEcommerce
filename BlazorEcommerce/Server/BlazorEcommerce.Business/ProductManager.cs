@@ -47,5 +47,21 @@ namespace BlazorEcommerce.Server.BlazorEcommerce.Business
         {
             return await _productRepository.GetProductByCategory(categoryId);
         }
+
+        public async Task<List<Product>> SearchProducts(string searchText)
+        {
+            var result = await _productRepository.GetAllAsync();
+            result = result.ToList().Where(x => x.Title.Contains(searchText) || x.Description.Contains(searchText));
+            if (result is not null)
+            {
+                
+                
+                return result.ToList();
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }
